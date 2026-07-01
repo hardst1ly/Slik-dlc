@@ -1,0 +1,36 @@
+{
+	"schemaVersion": 1,
+	"id": "soltise",
+	"version": "1.0.0",
+	"name": "soltise",
+	"description": "best dlc",
+	"authors": [
+		"kopchik"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/soltise/icon.png",
+	"environment": "*",
+	"jars": [
+		{
+			"file": "META-INF/jars/baritone-standalone-fabric-1.13.1.jar"
+		}
+	],
+	"entrypoints": {
+		"main": [
+			"fun.soltise.Soltise::INSTANCE"
+		]
+	},
+	"mixins": [
+      "soltise.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.21.4",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}

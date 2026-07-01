@@ -1,0 +1,75 @@
+plugins {
+	id 'fabric-loom' version "${loom_version}"
+	id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	mavenCentral()
+	maven { url = 'https://maven.llamalad7.com/releases' }
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/slikdlc.accesswidener")
+
+	runs {
+		client {
+			vmArg "-Djna.library.path=${file('src/main/resources/win32-x86-64').absolutePath}"
+			vmArg "-Djava.library.path=${file('src/main/resources/win32-x86-64').absolutePath}"
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.layered {
+		mappings("net.fabricmc:intermediary:${project.minecraft_version}")
+	}
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	implementation files('libs/pathfinder.jar')
+	implementation "io.github.llamalad7:mixinextras-fabric:0.4.1"
+	annotationProcessor "io.github.llamalad7:mixinextras-fabric:0.4.1"
+
+	compileOnly "org.projectlombok:lombok:1.18.36"
+	annotationProcessor "org.projectlombok:lombok:1.18.36"
+	implementation "net.java.dev.jna:jna:5.15.0"
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+}
+
+java {
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+tasks.named('jar', Jar) {
+	from {
+		zipTree('libs/pathfinder.jar')
+	}
+}
+
+tasks.named('validateAccessWidener').configure {
+	enabled = false
+}
